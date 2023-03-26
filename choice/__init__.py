@@ -5,7 +5,7 @@ from db.crud import get_ancestor_players, add_player_history
 
 
 doc = """
-Your app description
+Prisoners dillemma with advice from ancestors
 """
 
 
@@ -68,7 +68,6 @@ class Player(BasePlayer):
     ancestor_participant_id = models.IntegerField(default=0)
 
 
-
 # PAGES
 class Choice(Page):
     form_model = "player"
@@ -88,8 +87,11 @@ class Choice(Page):
     def app_after_this_page(player: Player, upcoming_apps):
         add_player_history(player)
 
-class Advice(Page):
-    pass
 
+class ResultWaitPage(WaitPage):
+    @staticmethod
+    def after_all_players_arrive(group: Group):
+        for p in group.get_players():
+            p.payoff = 100
 
 page_sequence = [Choice]
