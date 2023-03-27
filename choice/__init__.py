@@ -14,9 +14,9 @@ class C(BaseConstants):
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 1
     ROW_PLAYER = 1
+    COLUMN_PLAYER = 2
     COOPERATE = 0
     DEFECT = 1
-    COLUMN_PLAYER = 2
     CHOICES = ["Cooperate", "Defect"]
     TYPES = {1: 'Row Player', 2: 'Column Player'}
     ROW_PAYOFF_MATRIX=[[[3,3], [0,5]], [[5,0], [1,1]]]
@@ -98,7 +98,7 @@ class ResultWaitPage(WaitPage):
         for p in group.get_players():
             payoff_matrix = C.ROW_PAYOFF_MATRIX if p.role_type == C.ROW_PLAYER else C.COLUMN_PAYOFF_MATRIX
             other_player = p.get_others_in_group()[0]
-            p.payoff = payoff_matrix[p.choice - 1][other_player.choice - 1][p.role_type - 1]
+            p.payoff = payoff_matrix[p.choice - 1][other_player.choice - 1][0]
 
 
 class Result(Page):
