@@ -1,41 +1,88 @@
-{{ block title }}
-{{ endblock }}
-{{ block content }}
-  <div class="container">
+{% extends "global/Page.html" %}
+{% load static %}
+
+{% block title %}
+    Payoff Matrix
+{% endblock %}
+
+{% block content %}
+<style>
+    .matrix-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .matrix-row {
+        display: flex;
+        width: 100%;
+        align-items: center;
+    }
+
+    .matrix-labels {
+      display: flex;
+      align-items: center;
+    }
+
+    .matrix-label-content {
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+    .table {
+      margin-right:auto;
+      margin-left:auto;
+      width:100%;
+    }
+</style>
+
+<div class="container">
     <h3 class="jumbotron-heading text-center">You are a {{role_type}}</h3>
+</div>
+<div class="matrix-container">
+    <div class="matrix-labels"><div class="matrix-label-content">Other</div></div>
+    <div class="matrix-row">
+        <div class="matrix-labels"><div class="matrix-label-content">You</div></div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th class="bg-dark text-white">Cooperate</th>
+                    <th class="bg-dark text-white">Defect</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th class="bg-dark text-white">Cooperate</th>
+                    <td>({{ payoff_matrix.0.0.0 }}, {{ payoff_matrix.0.0.1 }})</td>
+                    <td>({{ payoff_matrix.0.1.0 }}, {{ payoff_matrix.0.1.1 }})</td>
+                </tr>
+                <tr>
+                    <th class="bg-dark text-white">Defect</th>
+                    <td>({{ payoff_matrix.1.0.0 }}, {{ payoff_matrix.1.0.1 }})</td>
+                    <td>({{ payoff_matrix.1.1.0 }}, {{ payoff_matrix.1.1.1 }})</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% if ancestor_advice %}
+<div>
+  <div>
+    <span>Ancestor Advice</span>
   </div>
   <div>
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th></th>
-          <th class="bg-dark text-white">Cooperate</th>
-          <th class="bg-dark text-white">Defect</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="bg-dark text-white font-weight-bold">Cooperate</td>
-          <td>({{ row_player.C.C }}, {{ column_player.C.D }})</td>
-          <td>({{ row_player.D.C }}, {{ column_player.D.D }})</td>
-        </tr>
-        <tr>
-          <td class="bg-dark text-white font-weight-bold">Defect</td>
-          <td>({{ row_player.C.C }}, {{ column_player.C.D }})</td>
-          <td>({{ row_player.D.C }}, {{ column_player.D.D }})</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  {% if ancestor_advice %}
   <textarea class="form-control" rows="3" readonly>{{ ancestor_advice }}</textarea>
-  {% endif %}
-  <div>
-
   </div>
+</div>
+<hr>
+{% endif %}
+<div>
 
-  {{ formfields }}
+</div>
 
-  {{ next_button }}
+{{ formfields }}
 
-{{ endblock }}
+{{ next_button }}
+
+{% endblock %}
