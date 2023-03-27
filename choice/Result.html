@@ -1,0 +1,76 @@
+{{ block title }}
+Final Payoff
+{{ endblock }}
+
+{{ block style }}
+<style>
+    .matrix-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .matrix-row {
+        display: flex;
+        width: 100%;
+        align-items: center;
+    }
+
+    .matrix-labels {
+      display: flex;
+      align-items: center;
+    }
+
+    .matrix-label-content {
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+    .table {
+      margin-right:auto;
+      margin-left:auto;
+      width:100%;
+    }
+</style>
+{{ endblock }}
+
+{{ block content }}
+<div class="container">
+    <h3 class="jumbotron-heading text-center">You are a {{role_type}}</h3>
+</div>
+<div class="matrix-container">
+    <div class="matrix-labels"><div class="matrix-label-content">Other</div></div>
+    <div class="matrix-row">
+        <div class="matrix-labels"><div class="matrix-label-content">You</div></div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th class="bg-dark text-white">Cooperate</th>
+                    <th class="bg-dark text-white">Defect</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th class="bg-dark text-white">Cooperate</th>
+                    <td class="{{if choice == 1 and others_choice == 1}}table-success fw-bold{{endif}} text-center">({{ payoff_matrix.0.0.0 }}, {{ payoff_matrix.0.0.1 }})</td>
+                    <td class="{{if choice == 1 and others_choice == 2}}table-success fw-bold{{endif}} text-center">({{ payoff_matrix.0.1.0 }}, {{ payoff_matrix.0.1.1 }})</td>
+                </tr>
+                <tr>
+                    <th class="bg-dark text-white">Defect</th>
+                    <td class="{{if choice == 2 and others_choice == 1}}table-success fw-bold{{endif}} text-center">({{ payoff_matrix.1.0.0 }}, {{ payoff_matrix.1.0.1 }})</td>
+                    <td class="{{if choice == 2 and others_choice == 2}}table-success fw-bold{{endif}} text-center">({{ payoff_matrix.1.1.0 }}, {{ payoff_matrix.1.1.1 }})</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div>
+    <p>You chose to <b>{{ choice_label }}</b> and the other player chose <b>{{others_choice_label}}</b>. As a result your payoff is <b>{{ payoff }}</b>.</p>
+</div>
+
+
+    {{ next_button }}
+{{ endblock }}
+
+

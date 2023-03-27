@@ -14,8 +14,13 @@ class C(BaseConstants):
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 1
     ROW_PLAYER = 1
+    COOPERATE = 0
+    DEFECT = 1
     COLUMN_PLAYER = 2
+    CHOICES = ["Cooperate", "Defect"]
     TYPES = {1: 'Row Player', 2: 'Column Player'}
+    ROW_PAYOFF_MATRIX=[[[3,3], [0,5]], [[5,0], [1,1]]]
+    COLUMN_PAYOFF_MATRIX=[[[3,3], [0,5]], [[5,0], [1,1]]]
 
 
 def creating_session(subsession):
@@ -76,8 +81,7 @@ class Choice(Page):
     @staticmethod
     def vars_for_template(player: Player):
         return dict(
-            row_player=dict(C=dict(C=3, D=0), D=dict(C=5, D=1)), 
-            column_player=dict(C=dict(C=3, D=5), D=dict(C=0, D=1)),
+            payoff_matrix=C.ROW_PAYOFF_MATRIX if player.role_type == C.ROW_PLAYER else C.COLUMN_PAYOFF_MATRIX,
             ancesor_session_id=player.ancestor_session_id,
             ancestor_advice=player.ancestor_advice,
             role_type = C.TYPES[player.role_type],
@@ -92,6 +96,26 @@ class ResultWaitPage(WaitPage):
     @staticmethod
     def after_all_players_arrive(group: Group):
         for p in group.get_players():
-            p.payoff = 100
+            payoff_matrix = C.ROW_PAYOFF_MATRIX if p.role_type == C.ROW_PLAYER else C.COLUMN_PAYOFF_MATRIX
+            other_player = p.get_others_in_group()[0]
+            p.payoff = payoff_matrix[p.choice - 1][other_player.choice - 1][p.role_type - 1]
 
-page_sequence = [Choice]
+
+class Result(Page):
+    @staticmethod
+    def vars_for_template(player: Player):
+        other_player = player.get_others_in_group()[0]
+        payoff_matrix = C.ROW_PAYOFF_MATRIX if player.role_type == C.ROW_PLAYER else C.COLUMN_PAYOFF_MATRIX
+        return dict(
+            choice_label=C.CHOICES[player.choice - 1],
+            others_choice_label=C.CHOICES[other_player.choice - 1],
+            choice = player.choice,
+            others_choice = other_player.choice,
+            payoff=player.payoff,
+            others_payoff=other_player.payoff,
+            payoff_matrix=payoff_matrix,
+            role_type=C.TYPES[player.role_type],
+            matrix_choice=(player.choice-1, other_player.choice-1)
+        )
+
+page_sequence = [Choice, ResultWaitPage, Result]
