@@ -1,6 +1,5 @@
 from curses import echo
 import os
-from types import NoneType
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -17,7 +16,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATABASE_URL = os.getenv("DATABASE_URL", "")
 
 # If the DATABASE_URL environment variable is not set, use sqlite
-if DATABASE_URL == "" or DATABASE_URL is NoneType:
+if DATABASE_URL == "" or DATABASE_URL is None:
     print("Using sqlite database")
     SQLITE_DATABASE_URL = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
     engine = create_engine(SQLITE_DATABASE_URL, connect_args={"check_same_thread": False})
