@@ -1,16 +1,33 @@
+from curses import echo
 import os
+from types import NoneType
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
+# import logging
+# logging.basicConfig()
+# logger = logging.getLogger('sqlalchemy.engine')
+# logger.setLevel(logging.INFO)
+
 # The base directory should be two levels up from the current file
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# The database url is either the environment variable DATABASE_URL or a local sqlite database
-SQLITE_DATABASE_URL = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
-# Create the database engine
-engine = create_engine(os.getenv("DATABASE_URL", SQLITE_DATABASE_URL))
+
+# Get the DATABASE_URL environment variable, which is empty if it doesn't exist
+DATABASE_URL = os.getenv("DATABASE_URL", "")
+
+# If the DATABASE_URL environment variable is not set, use sqlite
+if DATABASE_URL == "" or DATABASE_URL is NoneType:
+    print("Using sqlite database")
+    SQLITE_DATABASE_URL = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
+    engine = create_engine(SQLITE_DATABASE_URL, connect_args={"check_same_thread": False})
+# If the DATABASE_URL environment variable is set, use postgres
+else:
+    engine = create_engine(DATABASE_URL)
+
 # Create a session factory
 Session = sessionmaker(bind=engine)
+
 # Create a base class for models
 Base = declarative_base()
 
