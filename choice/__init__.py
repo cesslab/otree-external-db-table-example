@@ -65,6 +65,7 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
+    sid = models.IntegerField()
     role_type = models.IntegerField(choices=[[1, 'Row player'], [2, 'Column player']])
     choice = models.IntegerField(choices=[[1, 'Cooperate'],[2, 'Defect']], label="Your choice")
     advice = models.LongStringField(label="Advice to next player")
@@ -96,6 +97,7 @@ class ResultWaitPage(WaitPage):
     @staticmethod
     def after_all_players_arrive(group: Group):
         for p in group.get_players():
+            p.sid = p.participant.session.id
             payoff_matrix = C.ROW_PAYOFF_MATRIX if p.role_type == C.ROW_PLAYER else C.COLUMN_PAYOFF_MATRIX
             other_player = p.get_others_in_group()[0]
             p.payoff = payoff_matrix[p.choice - 1][other_player.choice - 1][0]
